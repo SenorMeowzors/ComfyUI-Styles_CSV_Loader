@@ -22,6 +22,7 @@ class TestStylesCSVLoader(unittest.TestCase):
         self.valid_csv_path = os.path.join(self.fixtures_dir, 'valid_styles.csv')
         self.invalid_csv_path = os.path.join(self.fixtures_dir, 'invalid_styles.csv')
         self.complex_csv_path = os.path.join(self.fixtures_dir, 'complex_styles.csv')
+        self.multiline_csv_path = os.path.join(self.fixtures_dir, 'multiline_styles.csv')
         self.nonexistent_csv_path = os.path.join(self.fixtures_dir, 'nonexistent.csv')
     
     def test_load_valid_csv(self):
@@ -98,6 +99,17 @@ class TestStylesCSVLoader(unittest.TestCase):
         self.assertIn('Empty Negative', styles)
         empty_neg_style = styles['Empty Negative']
         self.assertEqual(empty_neg_style[1], '')
+
+    def test_load_multiline_csv(self):
+        """Test loading CSV rows that contain quoted multiline fields."""
+        styles = StylesCSVLoader.load_styles_csv(self.multiline_csv_path)
+
+        self.assertIn('Multiline Prompt', styles)
+        multiline_style = styles['Multiline Prompt']
+        self.assertEqual(multiline_style[0], 'first line, with comma\nsecond line')
+        self.assertEqual(multiline_style[1], 'bad quality,\nblurry')
+
+        self.assertIn('Single Line', styles)
     
     def test_all_styles_have_correct_structure(self):
         """Test that all loaded styles have the correct structure."""
