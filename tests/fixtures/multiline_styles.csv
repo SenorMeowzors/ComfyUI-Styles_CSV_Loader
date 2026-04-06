@@ -1,0 +1,5 @@
+name,prompt,negative_prompt
+"Multiline Prompt","first line, with comma
+second line","bad quality,
+blurry"
+"Single Line","normal prompt","normal negative"

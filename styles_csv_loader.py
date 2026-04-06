@@ -1,5 +1,5 @@
+import csv
 import os
-import re
 import folder_paths
 
 
@@ -10,10 +10,9 @@ class StylesCSVLoader:
 
     @staticmethod
     def load_styles_csv(styles_path: str):
-        """Loads csv file with styles. It has only one column.
+        """Loads csv file with styles.
         Ignore the first row (header).
-        positive_prompt are strings separated by comma. Each string is a prompt.
-        negative_prompt are strings separated by comma. Each string is a prompt.
+        positive_prompt and negative_prompt are loaded from CSV columns.
 
         Returns:
             list: List of styles. Each style is a dict with keys: style_name and value: [positive_prompt, negative_prompt]
@@ -27,10 +26,10 @@ class StylesCSVLoader:
             """)
             return styles
         try:
-            with open(styles_path, "r", encoding="utf-8") as f:
-                styles = [[x.replace('"', '').replace('\n', '') for x in re.split(
-                    ',(?=(?:[^"]*"[^"]*")*[^"]*$)', line)] for line in f.readlines()[1:]]
-                styles = {x[0]: [x[1], x[2]] for x in styles}
+            with open(styles_path, "r", encoding="utf-8-sig", newline="") as f:
+                csv_reader = csv.reader(f)
+                next(csv_reader, None)  # Skip header
+                styles = {row[0]: [row[1], row[2]] for row in csv_reader}
         except Exception as e:
             # Normalize path for cross-platform display
             normalized_base_path = os.path.normpath(folder_paths.base_path)
